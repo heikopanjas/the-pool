@@ -28,6 +28,19 @@
 
 ## Coding Conventions
 
+### Code Formatting
+
+The project uses `.clang-format` for automatic code formatting. Key formatting rules include:
+
+- **Indentation**: 4 spaces (no tabs)
+- **Column Limit**: 160 characters
+- **Brace Style**: Custom with specific wrapping rules (see `.clang-format`)
+- **Pointer/Reference Alignment**: Left (`int* ptr`, `int& ref`)
+- **Access Modifier Offset**: -4 (align with class keyword)
+- **Line Endings**: LF (Unix-style)
+
+**Important:** Always run clang-format before committing code to ensure consistency.
+
 ### C++ Style
 
 - **Header Guards**: Use `#ifndef __FILENAME_H_INCL__` pattern with double underscores
@@ -38,8 +51,9 @@
   - PascalCase for private methods (e.g., `SignalThreadsToStop`, `GetNextTask`)
 - **Template Placement**: Template implementations in header file (required for templates)
 - **Documentation**: Doxygen-style comments with `///` and `\brief`, `\param`, `\return`, `\note`, `\throws` tags
-- **Whitespace**: Braces on same line for methods, consistent 4-space indentation
-- **Comparisons**: Yoda conditions for constants (e.g., `true == stop_`, `0 == activeTasks_`)
+- **Comparisons**: Constant on left-hand side of equality comparisons (e.g., `true == stop_`, `0 == activeTasks_`)
+- **Alignment**: Consecutive assignments, declarations, and macros are aligned (enforced by clang-format)
+- **Empty Lines**: Maximum 1 empty line between code blocks
 
 ### Design Patterns
 
@@ -175,4 +189,16 @@ When committing changes:
 - Added CMakeLists.txt with shared/static library support via BUILD_SHARED_LIBS
 - Updated build commands with CMake workflow
 - Documented compiler requirements (GCC 11+, Clang 13+, MSVC 2022+)
+
+### 2025-10-03 - Comparison Convention Terminology
+
+- Updated terminology from "Yoda conditions" to "constant on left-hand side of equality comparisons"
+- This convention prevents accidental assignment in conditionals and improves code safety
+
+### 2025-10-03 - Added clang-format Configuration
+
+- Added `.clang-format` file with project-specific formatting rules
+- Key settings: 4-space indentation, 160 column limit, custom brace wrapping, left pointer alignment
+- Updated AGENTS.md to reference clang-format as the authoritative formatting source
+- Emphasized importance of running clang-format before commits
 
