@@ -1,10 +1,10 @@
 #include "ThreadPool.h"
 #include <algorithm>
 
-ThreadPool::ThreadPool(size_t threads, size_t maxQueueSize) : stop_(false), activeTasks_(0), maxQueueSize_(maxQueueSize)
+ThreadPool::ThreadPool(const size_t threadCount, const size_t maxQueueSize) : stop_(false), activeTasks_(0), maxQueueSize_(maxQueueSize)
 {
     // Create the specified number of worker threads
-    for (size_t i = 0; i < threads; ++i)
+    for (size_t i = 0; i < threadCount; ++i)
     {
         // Each thread is created with a lambda that defines its work loop
         workers_.emplace_back([this] {

@@ -54,6 +54,7 @@ The project uses `.clang-format` for automatic code formatting. Key formatting r
 - **Comparisons**: Constant on left-hand side of equality comparisons (e.g., `true == stop_`, `0 == activeTasks_`)
 - **Alignment**: Consecutive assignments, declarations, and macros are aligned (enforced by clang-format)
 - **Empty Lines**: Maximum 1 empty line between code blocks
+- **Function Parameters**: All input parameters should be const (e.g., `void Foo(const int value)`)
 
 ### Design Patterns
 
@@ -201,4 +202,11 @@ When committing changes:
 - Key settings: 4-space indentation, 160 column limit, custom brace wrapping, left pointer alignment
 - Updated AGENTS.md to reference clang-format as the authoritative formatting source
 - Emphasized importance of running clang-format before commits
+
+### 2025-10-03 - Const Function Parameters
+
+- Updated all function input parameters to be const
+- Added convention to coding guidelines: all input parameters should be const
+- Improves code safety by preventing accidental modification of parameters
+- Template forwarding references (T&&) remain unchanged as they require perfect forwarding
 

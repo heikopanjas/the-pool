@@ -27,11 +27,11 @@ public:
     ///
     /// \brief Constructs a thread pool with the specified number of threads
     ///
-    /// \param threads Number of worker threads to create in the pool
+    /// \param threadCount Number of worker threads to create in the pool
     /// \param maxQueueSize Maximum size of the task queue (defaults to 10'000)
     /// \throws std::system_error If thread creation fails
     ///
-    ThreadPool(size_t threads, size_t maxQueueSize = 10'000);
+    ThreadPool(const size_t threadCount, const size_t maxQueueSize = 10'000);
 
     ///
     /// \brief Destructor - stops all threads and waits for their completion
