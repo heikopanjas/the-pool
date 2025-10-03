@@ -270,15 +270,6 @@ MIT License - Copyright (c) 2025 Heiko Panjas
 
 See [LICENSE](LICENSE) file for details.
 
-## Contributing
-
-Contributions are welcome. Please ensure:
-
-- Code follows the existing style conventions (see [AGENTS.md](AGENTS.md))
-- All public APIs have comprehensive Doxygen comments
-- Thread safety considerations are documented
-- Changes are tested with both shared and static library builds
-
 ## Documentation
 
 For detailed coding standards and project conventions, see [AGENTS.md](AGENTS.md).
