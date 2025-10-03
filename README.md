@@ -154,14 +154,14 @@ int main() {
 ### Constructor
 
 ```cpp
-ThreadPool(size_t threads, size_t maxQueueSize = 10'000)
+ThreadPool(const size_t threadCount, const size_t maxQueueSize = 10'000)
 ```
 
 Creates a thread pool with the specified number of worker threads and maximum queue size.
 
 **Parameters:**
 
-- `threads` - Number of worker threads to create
+- `threadCount` - Number of worker threads to create
 - `maxQueueSize` - Maximum number of pending tasks (default: 10,000)
 
 **Throws:**
