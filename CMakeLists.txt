@@ -18,6 +18,10 @@ set(HEADERS
 # Create library (shared or static based on BUILD_SHARED_LIBS)
 add_library(threadpool ${SOURCES} ${HEADERS})
 
+# Create alias for FetchContent compatibility
+# Allows consumers to use ThreadPool::threadpool with both find_package() and FetchContent
+add_library(ThreadPool::threadpool ALIAS threadpool)
+
 # Set include directories
 target_include_directories(threadpool
     PUBLIC

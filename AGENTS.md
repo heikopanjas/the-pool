@@ -1,6 +1,6 @@
 # Project Instructions for AI Coding Agents
 
-**Last updated:** 2025-10-03
+**Last updated:** 2025-12-07
 
 ## Project Overview
 
@@ -209,4 +209,10 @@ When committing changes:
 - Added convention to coding guidelines: all input parameters should be const
 - Improves code safety by preventing accidental modification of parameters
 - Template forwarding references (T&&) remain unchanged as they require perfect forwarding
+
+### 2025-12-07 - FetchContent Compatibility
+
+- Added alias target `ThreadPool::threadpool` for FetchContent compatibility
+- Consumers can now use the same target name with both `find_package()` and `FetchContent`
+- This follows CMake best practices for library distribution
 
