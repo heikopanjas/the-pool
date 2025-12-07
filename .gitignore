@@ -1,19 +1,109 @@
-CMakeLists.txt.user
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps
-CMakeUserPresets.json
+# C++ .gitignore
+# Covers both Unix and Windows platforms
 
-# CLion
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#cmake-build-*
+# C++ object files (Unix)
+*.o
+*.ko
+*.elf
+
+# C++ object files (Windows)
+*.obj
+
+# Static libraries (Unix)
+*.a
+*.la
+*.lo
+
+# Static libraries (Windows)
+*.lib
+
+# Shared libraries (Unix)
+*.so
+*.so.*
+*.dylib
+
+# Shared libraries (Windows)
+*.dll
+
+# Executables (Unix)
+*.out
+*.app
+
+# Executables (Windows)
+*.exe
+*.com
+
+# Compiled dynamic libraries
+*.dylib
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+_deps/
+build/
+Build/
+_build/
+out/
+
+# Make generated files
+*.d
+
+# Preprocessed files
+*.i
+*.ii
+*.s
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Visual Studio files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+x64/
+x86/
+Debug/
+Release/
+
+# Clang/LLVM
+compile_commands.json
+.clangd/
+.cache/
+
+# Qt
+*.pro.user
+*.qbs.user
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.autosave
+
+# Core dumps
+core
+core.*
+vgcore.*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.*.swp

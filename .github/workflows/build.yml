@@ -1,0 +1,95 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - develop
+      - 'feature/**'
+  pull_request:
+    branches:
+      - develop
+      - 'feature/**'
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }} with ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux builds
+          - os: ubuntu-22.04
+            compiler: gcc-11
+            cc: gcc-11
+            cxx: g++-11
+          - os: ubuntu-22.04
+            compiler: gcc-12
+            cc: gcc-12
+            cxx: g++-12
+          - os: ubuntu-22.04
+            compiler: clang-14
+            cc: clang-14
+            cxx: clang++-14
+          
+          # macOS build
+          - os: macos-latest
+            compiler: clang
+            cc: clang
+            cxx: clang++
+          
+          # Windows build
+          - os: windows-latest
+            compiler: msvc
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Ninja (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      
+      - name: Install Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+      
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja
+      
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: Configure CMake (Unix)
+        if: runner.os != 'Windows'
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Build
+        run: cmake --build build
+      
+      - name: Create packages
+        run: cmake --build build --target package
+      
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.os }}-${{ matrix.compiler }}
+          path: build/ThreadPool-*
+          if-no-files-found: error
+

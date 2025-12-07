@@ -1,3 +1,11 @@
+///
+/// \file ThreadPool.cpp
+/// \brief Implementation of the ThreadPool class
+///
+/// \copyright Copyright (c) Heiko Panjas
+/// \license SPDX-License-Identifier: MIT
+///
+
 #include "ThreadPool.h"
 #include <algorithm>
 

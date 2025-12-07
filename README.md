@@ -30,22 +30,32 @@ A modern C++23 thread pool implementation that provides efficient task-based par
 
 ```bash
 mkdir build && cd build
-cmake ..
-make
+cmake -G Ninja ..
+cmake --build .
 ```
 
 ### Shared Library Build
 
 ```bash
 mkdir build && cd build
-cmake -DBUILD_SHARED_LIBS=ON ..
-make
+cmake -G Ninja -DBUILD_SHARED_LIBS=ON ..
+cmake --build .
 ```
 
 ### Installation
 
 ```bash
-sudo make install
+cmake --install . --prefix /usr/local
+```
+
+### Creating Packages
+
+```bash
+# Source package (tar.gz and zip)
+cmake --build . --target package_source
+
+# Binary package (platform-specific)
+cmake --build . --target package
 ```
 
 This installs:
@@ -255,7 +265,26 @@ The destructor:
 
 ## Integration with CMake Projects
 
-After installation, you can use the thread pool in your CMake projects:
+### Using FetchContent (Recommended)
+
+The easiest way to use this library is with CMake's FetchContent:
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+    ThreadPool
+    GIT_REPOSITORY https://github.com/heikopanjas/the-pool.git
+    GIT_TAG v1.0.0
+)
+FetchContent_MakeAvailable(ThreadPool)
+
+add_executable(my_app main.cpp)
+target_link_libraries(my_app PRIVATE ThreadPool::threadpool)
+```
+
+### Using find_package (After Installation)
+
+If you've installed the library system-wide:
 
 ```cmake
 find_package(ThreadPool REQUIRED)
