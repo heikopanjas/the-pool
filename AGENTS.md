@@ -82,24 +82,81 @@ The project uses `.clang-format` for automatic code formatting. Key formatting r
 
 ## Build Commands
 
-Build system is CMake-based. Standard workflow:
+Build system is CMake-based with Ninja generator. Standard workflow:
 
 ```bash
 # Configure (static library by default)
 mkdir build && cd build
-cmake ..
+cmake -G Ninja ..
 
 # Configure for shared library
-cmake -DBUILD_SHARED_LIBS=ON ..
+cmake -G Ninja -DBUILD_SHARED_LIBS=ON ..
 
 # Build
-make
+cmake --build .
 
 # Install (optional)
-sudo make install
+cmake --install . --prefix /usr/local
+
+# Create packages
+cmake --build . --target package_source  # Source archives
+cmake --build . --target package         # Binary packages
 ```
 
 Compiler requirements: C++23 support required (GCC 11+, Clang 13+, MSVC 2022+)
+
+## CI/CD - GitHub Actions
+
+The project uses GitHub Actions for continuous integration and release automation.
+
+### Build Workflow (`.github/workflows/build.yml`)
+
+**Triggers:**
+- Push to `develop` branch
+- Push to `feature/**` branches
+- Pull requests targeting `develop` or `feature/**` branches
+
+**Actions:**
+- Builds library on Linux (Ubuntu 22.04), macOS, and Windows
+- Tests multiple compilers:
+  - Linux: GCC 11, GCC 12, Clang 14
+  - macOS: Apple Clang (latest)
+  - Windows: MSVC 2022
+- Creates CPack packages for each platform
+- Uploads packages as workflow artifacts
+
+**Purpose:** Validates that code changes compile successfully across platforms and compilers before merging.
+
+### Release Workflow (`.github/workflows/release.yml`)
+
+**Triggers:**
+- Push of tag matching `v*` pattern (e.g., `v1.0.0`)
+- Tag must point to a commit on the `main` branch
+
+**Actions:**
+- Verifies tag is on `main` branch (fails early if not)
+- Builds library on Linux, macOS, and Windows
+- Creates platform-specific packages:
+  - Linux: `.tar.gz`, `.deb`, `.rpm`
+  - macOS: `.tar.gz`
+  - Windows: `.zip`
+- Creates source archives (`.tar.gz` and `.zip`)
+- Creates GitHub Release with:
+  - All generated packages attached
+  - Auto-generated release notes with FetchContent usage instructions
+
+**Release creation workflow:**
+```bash
+# Ensure you're on main branch
+git checkout main
+git pull origin main
+
+# Create and push tag
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+
+# GitHub Actions will automatically create the release
+```
 
 ## Best Practices
 
@@ -215,4 +272,18 @@ When committing changes:
 - Added alias target `ThreadPool::threadpool` for FetchContent compatibility
 - Consumers can now use the same target name with both `find_package()` and `FetchContent`
 - This follows CMake best practices for library distribution
+
+### 2025-12-07 - Build System Enhancements
+
+- Updated documentation to use Ninja generator and generator-agnostic cmake --build commands
+- Added CMake-configured version header (ThreadPoolVersion.h.in)
+- Added CPack configuration for source and binary package generation
+- Added file headers with copyright and license information to all source files
+
+### 2025-12-07 - GitHub Actions CI/CD
+
+- Added build workflow for develop and feature branches with multi-compiler testing
+- Added release workflow for automated GitHub releases on v* tags
+- Release workflow validates that tags are on main branch before proceeding
+- Automated package creation for Linux, macOS, and Windows platforms
 

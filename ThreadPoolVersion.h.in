@@ -1,0 +1,25 @@
+///
+/// \file ThreadPoolVersion.h
+/// \brief Version information for the ThreadPool library
+///
+/// \copyright Copyright (c) Heiko Panjas
+/// \license SPDX-License-Identifier: MIT
+///
+
+#ifndef __THREAD_POOL_VERSION_H_INCL__
+#define __THREAD_POOL_VERSION_H_INCL__
+
+#define THREADPOOL_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define THREADPOOL_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define THREADPOOL_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define THREADPOOL_VERSION_STRING "@PROJECT_VERSION@"
+
+namespace ThreadPool
+{
+    constexpr int VersionMajor = THREADPOOL_VERSION_MAJOR;
+    constexpr int VersionMinor = THREADPOOL_VERSION_MINOR;
+    constexpr int VersionPatch = THREADPOOL_VERSION_PATCH;
+    constexpr const char* VersionString = THREADPOOL_VERSION_STRING;
+} // namespace ThreadPool
+
+#endif // __THREAD_POOL_VERSION_H_INCL__

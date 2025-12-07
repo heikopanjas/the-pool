@@ -1,3 +1,11 @@
+///
+/// \file ThreadPool.h
+/// \brief Modern C++ thread pool with futures and backpressure control
+///
+/// \copyright Copyright (c) Heiko Panjas
+/// \license SPDX-License-Identifier: MIT
+///
+
 #ifndef __THREAD_POOL_H_INCL__
 #define __THREAD_POOL_H_INCL__
 

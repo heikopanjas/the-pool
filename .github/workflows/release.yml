@@ -1,0 +1,151 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  check-branch:
+    name: Check if tag is on main branch
+    runs-on: ubuntu-latest
+    outputs:
+      on_main: ${{ steps.check.outputs.on_main }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check if tag points to main branch
+        id: check
+        run: |
+          git fetch origin main
+          TAG_COMMIT=$(git rev-list -n 1 ${{ github.ref }})
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          
+          if git merge-base --is-ancestor $TAG_COMMIT origin/main; then
+            echo "Tag is on main branch"
+            echo "on_main=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag is NOT on main branch"
+            echo "on_main=false" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    name: Build on ${{ matrix.os }}
+    needs: check-branch
+    if: needs.check-branch.outputs.on_main == 'true'
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            artifact_pattern: "*.tar.gz,*.deb,*.rpm"
+          - os: macos-latest
+            artifact_pattern: "*.tar.gz"
+          - os: windows-latest
+            artifact_pattern: "*.zip"
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Ninja (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ninja-build rpm
+      
+      - name: Install Ninja (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja
+      
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja
+      
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
+      
+      - name: Build
+        run: cmake --build build
+      
+      - name: Create binary packages
+        run: cmake --build build --target package
+      
+      - name: Create source packages (Linux only)
+        if: runner.os == 'Linux'
+        run: cmake --build build --target package_source
+      
+      - name: List generated packages
+        shell: bash
+        run: ls -lh build/ThreadPool-*
+      
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ matrix.os }}
+          path: build/ThreadPool-*
+          if-no-files-found: error
+
+  release:
+    name: Create GitHub Release
+    needs: [check-branch, build]
+    if: needs.check-branch.outputs.on_main == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all packages
+        uses: actions/download-artifact@v4
+        with:
+          path: packages
+      
+      - name: Display structure of downloaded files
+        run: ls -R packages
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: packages/**/*
+          body: |
+            ## Release ${{ github.ref_name }}
+            
+            Automated release of the ThreadPool library.
+            
+            ### Installation with CMake FetchContent
+            
+            ```cmake
+            include(FetchContent)
+            FetchContent_Declare(
+                ThreadPool
+                GIT_REPOSITORY https://github.com/${{ github.repository }}.git
+                GIT_TAG ${{ github.ref_name }}
+            )
+            FetchContent_MakeAvailable(ThreadPool)
+            
+            target_link_libraries(your_target PRIVATE ThreadPool::threadpool)
+            ```
+            
+            ### Packages
+            
+            - **Linux**: .tar.gz, .deb, .rpm packages
+            - **macOS**: .tar.gz package
+            - **Windows**: .zip package
+            - **Source**: .tar.gz and .zip archives
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
